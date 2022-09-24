@@ -33,21 +33,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         index: _selectedIndex,
         children: _screens,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (index) {
           _onItemTapped(index);
         },
-        currentIndex: _selectedIndex,
-        items: const [
-          BottomNavigationBarItem(
+        selectedIndex: _selectedIndex,
+        destinations: const [
+          NavigationDestination(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.business),
             label: 'Business',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.person),
             label: 'Account',
           ),

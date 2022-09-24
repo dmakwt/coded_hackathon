@@ -1,11 +1,10 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_coded/models/invite/invite.dart';
 import 'package:flutter_application_coded/models/quttia/quttia.dart';
 import 'package:flutter_application_coded/providers/refresh_home_page.dart';
-import 'package:flutter_application_coded/screens/add_balance_screen.dart';
 import 'package:flutter_application_coded/screens/create_quttia.dart';
 import 'package:flutter_application_coded/screens/notify_screen.dart';
 import 'package:flutter_application_coded/screens/share_quttia.dart';
@@ -52,19 +51,21 @@ class _HomeScreenState extends State<HomeScreen> {
             if (snapshot.hasData) {
               final invites = snapshot.data!.size;
 
-              return Badge(
-                badgeContent: Text('$invites'),
-                showBadge: !(invites <= 0),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NotifyScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.notifications),
+              return IconButton(
+                // splashRadius: 4,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotifyScreen(),
+                    ),
+                  );
+                },
+                icon: Badge(
+                  position: BadgePosition.topEnd(),
+                  badgeContent: Text('$invites'),
+                  showBadge: !(invites <= 0),
+                  child: Icon(Icons.notifications),
                 ),
               );
             }
@@ -117,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         final quttia = snapshot.data();
                         return Card(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ListTile(
                                 title: Text(quttia.title),
@@ -125,7 +127,104 @@ class _HomeScreenState extends State<HomeScreen> {
                                 trailing: Text(
                                     '${(quttia.amount / quttia.numberOfUser).toStringAsFixed(1)} KD / per person'),
                               ),
-                              Text(quttia.status),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    const Text('Quttia Status: '),
+                                    Text(
+                                      quttia.status,
+                                      style: TextStyle(
+                                        color: quttia.status == 'DONE'
+                                            ? Colors.green
+                                            : Colors.orange,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Text('People in Quttia: '),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 100,
+                                  child: ListView.builder(
+                                    itemCount: quttia.usersId.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: ((context, index) {
+                                      final userId = quttia.usersId[index];
+
+                                      return StreamBuilder<
+                                              DocumentSnapshot<
+                                                  Map<String, dynamic>>>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(userId)
+                                              .snapshots(),
+                                          builder: ((context, snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error = ${snapshot.error}');
+                                            }
+                                            if (snapshot.hasData) {
+                                              var output =
+                                                  snapshot.data!.data();
+                                              final data =
+                                                  Account.fromJson(output!);
+
+                                              // var value = output!['name']; // <-- Your value
+                                              return Center(
+                                                child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 2),
+                                                    child: AvatarGlow(
+                                                      endRadius: 40,
+                                                      animate: true,
+                                                      glowColor: Theme.of(
+                                                              context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer,
+                                                      child: Container(
+                                                        height: 50,
+                                                        width: 50,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                'https://ui-avatars.com/api/?name=${data.email}'),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )),
+                                              );
+                                            }
+
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }));
+
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(userId),
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
                               ListTile(
                                 title: TextButton.icon(
                                   onPressed: () {
@@ -136,62 +235,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     );
                                   },
-                                  icon: const Icon(Icons.share),
-                                  label: const Text('Share'),
-                                ),
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ListView.builder(
-                                  itemCount: quttia.usersId.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: ((context, index) {
-                                    final userId = quttia.usersId[index];
-
-                                    return StreamBuilder<
-                                            DocumentSnapshot<
-                                                Map<String, dynamic>>>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(userId)
-                                            .snapshots(),
-                                        builder: ((context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Text(
-                                                'Error = ${snapshot.error}');
-                                          }
-                                          if (snapshot.hasData) {
-                                            var output = snapshot.data!.data();
-                                            final data =
-                                                Account.fromJson(output!);
-
-                                            // var value = output!['name']; // <-- Your value
-                                            return Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(data.email),
-                                              ),
-                                            );
-                                          }
-
-                                          return const Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        }));
-
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(userId),
-                                    );
-                                  }),
+                                  icon: const Icon(Icons.person_add_rounded),
+                                  label: const Text('Invite'),
                                 ),
                               ),
                             ],
                           ),
                         );
-                        ;
                       },
                     )
 

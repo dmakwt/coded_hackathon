@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_coded/models/account/account.dart';
 import 'package:flutter_application_coded/screens/add_balance_screen.dart';
-import 'package:flutter_application_coded/screens/auth_gate.dart';
 import 'package:flutter_application_coded/screens/withdraw_balance_screen.dart';
 import 'package:flutterfire_ui/auth.dart';
 
@@ -43,53 +42,78 @@ class AccountScreen extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(30.0),
                         width: double.infinity,
-                        child: Text(
-                          'My email: ${FirebaseAuth.instance.currentUser!.email}',
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      'https://ui-avatars.com/api/?name=${data.email}'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 16,),
+                            Text(
+                              'My email: ${FirebaseAuth.instance.currentUser!.email}',
+                            ),
+                          ],
                         ),
                       ),
                     ),
                     Card(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Current Balance',
-                                style: TextStyle(
-                                  fontSize: 21,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Spacer(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Current Balance',
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '${data.balance} KD',
-                                style: const TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
+                                Text(
+                                  '${data.balance.toStringAsFixed(1)} KD',
+                                  style: const TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const VerticalDivider(),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'On Hold',
-                                style: TextStyle(
-                                  fontSize: 21,
+                              ],
+                            ),
+                            Spacer(),
+                            const VerticalDivider(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'On Hold',
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '${data.onHoldBalance} KD',
-                                style: const TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
+                                Text(
+                                  '${data.onHoldBalance.toStringAsFixed(1)} KD',
+                                  style: const TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            Spacer(),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 120),
