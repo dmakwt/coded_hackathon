@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_coded/screens/account_screen.dart';
 import 'package:flutter_application_coded/screens/home_screen.dart';
-import 'package:flutter_application_coded/screens/second_screen.dart';
+import 'package:flutter_application_coded/screens/payment_gateway_screen.dart';
 import 'package:flutterfire_ui/auth.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   static const List<Widget> _screens = <Widget>[
     HomeScreen(),
-    SecondScreen(),
+    PaymentGatewayScreen(),
     AccountScreen(),
   ];
 

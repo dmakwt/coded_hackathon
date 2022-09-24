@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_coded/models/account/account.dart';
 import 'package:flutter_application_coded/screens/add_balance_screen.dart';
+import 'package:flutter_application_coded/screens/auth_gate.dart';
 import 'package:flutter_application_coded/screens/withdraw_balance_screen.dart';
 import 'package:flutterfire_ui/auth.dart';
 
@@ -21,11 +22,19 @@ class AccountScreen extends StatelessWidget {
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .snapshots(),
           builder: (_, snapshot) {
-            if (snapshot.hasError) return Text('Error = ${snapshot.error}');
+            if (snapshot.hasError) {
+              return Text('Error = ${snapshot.error}');
+            }
 
             if (snapshot.hasData) {
               var output = snapshot.data!.data();
-              final data = Account.fromJson(output!);
+
+              if (output == null) {
+                return const Center(
+                  child: SignOutButton(),
+                );
+              }
+              final data = Account.fromJson(output);
 
               return SingleChildScrollView(
                 child: Column(
