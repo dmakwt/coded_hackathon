@@ -36,7 +36,27 @@ class NotifyScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
+                    Spacer(flex: 3,),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection('invites')
+                            .doc(invite.id)
+                            .delete();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      },
+                      child: Text('Reject'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.errorContainer,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                    ),
+                    Spacer(flex: 1,),
+
+                    ElevatedButton(
                       onPressed: () async {
                         final docAccount = await FirebaseFirestore.instance
                             .collection('users')
@@ -90,23 +110,86 @@ class NotifyScreen extends StatelessWidget {
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       },
-                      color: Colors.green,
-                      iconSize: 50,
-                      icon: const Icon(Icons.check_circle),
+                      child: Text('Accept'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[200],
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onErrorContainer,
+                      ),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        await FirebaseFirestore.instance
-                            .collection('invites')
-                            .doc(invite.id)
-                            .delete();
-                        // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
-                      },
-                      color: Colors.red,
-                      iconSize: 50,
-                      icon: const Icon(Icons.cancel),
-                    )
+                    Spacer(flex: 3,),
+
+                    // IconButton(
+                    //   onPressed: () async {
+                    //     await FirebaseFirestore.instance
+                    //         .collection('invites')
+                    //         .doc(invite.id)
+                    //         .delete();
+                    //     // ignore: use_build_context_synchronously
+                    //     Navigator.pop(context);
+                    //   },
+                    //   color: Colors.red,
+                    //   iconSize: 50,
+                    //   icon: const Icon(Icons.cancel),
+                    // ),
+                    // IconButton(
+                    //   onPressed: () async {
+                    //     final docAccount = await FirebaseFirestore.instance
+                    //         .collection('users')
+                    //         .doc(FirebaseAuth.instance.currentUser!.uid)
+                    //         .get();
+
+                    //     final account = Account.fromJson(docAccount.data()!);
+
+                    //     final docQuttia = FirebaseFirestore.instance
+                    //         .collection('quttaiat')
+                    //         .doc(invite.quttiaId);
+
+                    //     final docQuttia2 = await FirebaseFirestore.instance
+                    //         .collection('quttaiat')
+                    //         .doc(invite.quttiaId)
+                    //         .get();
+
+                    //     final quttia = Quttia.fromJson(docQuttia2.data()!);
+
+                    //     final pricePerPerson =
+                    //         (quttia.amount / quttia.numberOfUser);
+
+                    //     if (account.balance - pricePerPerson < 0) {
+                    //       BotToast.showText(text: 'Please, add more moeny');
+                    //       return;
+                    //     }
+
+                    //     await docQuttia.update({
+                    //       'usersId': FieldValue.arrayUnion(
+                    //           [FirebaseAuth.instance.currentUser!.uid])
+                    //     });
+
+                    //     final docQuttia3 = await FirebaseFirestore.instance
+                    //         .collection('quttaiat')
+                    //         .doc(invite.quttiaId)
+                    //         .get();
+
+                    //     final quttia3 = Quttia.fromJson(docQuttia3.data()!);
+
+                    //     if (quttia3.numberOfUser == quttia3.usersId.length) {
+                    //       await docQuttia.update({
+                    //         'status': 'DONE',
+                    //       });
+                    //     }
+
+                    //     await FirebaseFirestore.instance
+                    //         .collection('invites')
+                    //         .doc(invite.id)
+                    //         .delete();
+
+                    //     // ignore: use_build_context_synchronously
+                    //     Navigator.pop(context);
+                    //   },
+                    //   color: Colors.green,
+                    //   iconSize: 50,
+                    //   icon: const Icon(Icons.check_circle),
+                    // ),
                   ],
                 )
               ],

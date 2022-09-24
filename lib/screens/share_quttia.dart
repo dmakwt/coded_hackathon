@@ -32,7 +32,7 @@ class _ShareQuttiaState extends State<ShareQuttia> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Share Quttia'),
+        title: const Text('Invite To Quttia'),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -94,8 +94,8 @@ class _ShareQuttiaState extends State<ShareQuttia> {
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               },
-              icon: const Icon(Icons.share),
-              label: const Text('Share'),
+              icon: const Icon(Icons.person_add_rounded),
+              label: const Text('Invite'),
             ),
           ],
         ),

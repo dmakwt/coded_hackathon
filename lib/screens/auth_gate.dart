@@ -17,11 +17,9 @@ class AuthGate extends StatelessWidget {
               EmailProviderConfiguration(),
             ],
             headerBuilder: (context, constraints, shrinkOffset) {
-              return const Padding(
+              return Padding(
                 padding: EdgeInsets.only(top: 80.0),
-                child: FlutterLogo(
-                  size: 120,
-                ),
+                child: Image.asset('assets/Logo.png', height: 120),
               );
             },
             footerBuilder: ((context, action) {
